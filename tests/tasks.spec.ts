@@ -10,11 +10,12 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
 
   const inputTaskName = page.locator('input[class*=InputNewTask]')
   await inputTaskName.fill(taskName)
+
   // DICA recurso exclusivo do Playwright para selecionar um elemento com base em parte de seu nome de classe, usando o operador *=
   await page.click('css=button >> text=Create') /// em vez de usar xpath, podemos usar o seletor de texto do Playwright para clicar no botão "Create"
   //usando xpath
   // await page.click('//button[contains(text(),"Create")]')
 
-  const target = page.getByTestId('task-item')
+  const target = page.locator('css=.task-item p >> text=' + taskName) // usando o seletor de texto do Playwright para localizar a tarefa criada
   await expect(target).toHaveText(taskName)
 })
