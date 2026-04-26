@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker'
 test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
   const taskName = 'Ler um livro de qualidade'
   await request.delete('http://localhost:3333/helper/tasks/' + taskName) // Limpa as tarefas antes de iniciar o teste
-  
+
   await page.goto('http://localhost:8080');
 
   const inputTaskName = page.locator('input[class*=InputNewTask]')
@@ -15,4 +15,6 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
   //usando xpath
   // await page.click('//button[contains(text(),"Create")]')
 
+  const target = page.getByTestId('task-item')
+  await expect(target).toHaveText(taskName)
 })
