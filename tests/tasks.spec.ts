@@ -16,6 +16,6 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
   //usando xpath
   // await page.click('//button[contains(text(),"Create")]')
 
-  const target = page.locator('css=.task-item p >> text=' + taskName) // usando o seletor de texto do Playwright para localizar a tarefa criada
-  await expect(target).toHaveText(taskName)
+  const target = page.locator(`css=.task-item p >> text=${taskName}`) // usando o seletor de texto do Playwright para localizar a tarefa criada
+  await expect(target).toBeVisible()
 })
