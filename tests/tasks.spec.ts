@@ -1,10 +1,9 @@
-import { test, expect } from '@playwright/test'
-import { faker } from '@faker-js/faker'
-
 // 📚 Dicas completas sobre os recursos usados neste arquivo: docs/PLAYWRIGHT_TIPS.md
+import { test, expect } from '@playwright/test'
+
+const taskName = 'Ler um livro de qualidade'
 
 test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
-  const taskName = 'Ler um livro de qualidade'
 
   // 💡 DICA 1 — Fixture `request`: faz chamadas HTTP direto na API sem abrir browser.
   // Usado aqui para garantir que o teste começa sem dados residuais (idempotência).
@@ -28,9 +27,13 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
 })
 
 test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
-   await page.goto('http://localhost:8080')
-
+  await page.goto('http://localhost:8080')
 
   const inputTaskName = page.locator('input[class*=InputNewTask]')
   await inputTaskName.fill(taskName)
+  await page.click('css=button >> text=Create')
+
+  const target = page.locator('.swal2-html-container')
+  await expect(target).toHaveText('Task already exists!')
+  //await expect(alert).toHaveText('Task already exists')
 })
