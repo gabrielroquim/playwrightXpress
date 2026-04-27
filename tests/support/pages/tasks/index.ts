@@ -1,5 +1,5 @@
 import { TaskModel } from './../../../fixtures/task.model';
-import { Page } from '@playwright/test'
+import { Page, expect } from '@playwright/test'
 
 export class TasksPage {
     readonly page: Page
@@ -24,4 +24,14 @@ export class TasksPage {
         await this.page.click('css=button >> text=Create')
     }
 
+    async shouldHaveText(taskName: string) {
+        const target = this.page.locator(`css=.task-item p >> text=${taskName}`)
+        await expect(target).toBeVisible()
+    }
+
+    async alertHaveText(text: string) {
+        const target = this.page.locator('.swal2-html-container')
+        await expect(target).toHaveText(text)
+        //await expect(alert).toHaveText('Task already exists')
+    }
 }
