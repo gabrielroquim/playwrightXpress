@@ -2,17 +2,16 @@
 import { test, expect, APIRequestContext } from '@playwright/test'
 import { TaskModel } from './fixtures/task.model'
 
-async function deleteTaskByHelper(request: APIRequestContext, taskName: string) {
- await request.delete('http://localhost:3333/helper/tasks/' + taskName)
-}
+
 
 test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
   const task: TaskModel = {
     name: 'Ler um livro de testes de software',
     is_done: false
   }
-
-  await deleteTaskByHelper(request, task.name)
+  // 💡 DICA 1 — Fixture `request`: faz chamadas HTTP direto na API sem abrir browser.
+  // Usado aqui para garantir que o teste começa sem dados residuais (idempotência).
+  await request.delete('http://localhost:3333/helper/tasks/' + task.name)
 
   await page.goto('http://localhost:8080')
 
@@ -38,7 +37,7 @@ test.only('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ pag
     is_done: false
   }
 
-   await deleteTaskByHelper(request, task.name)
+  await request.delete('http://localhost:3333/helper/tasks/' + task.name)
 
   const newTask = await request.post('http://localhost:3333/tasks', {data: task})
   expect(newTask.ok()).toBeTruthy()

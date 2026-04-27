@@ -1,0 +1,20 @@
+[33ma6da719[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/qa[m[33m)[m HEAD@{2026-04-27 11:04:32 -0300}: rebase (abort): returning to refs/heads/feature/qa
+[33md6d14e0[m[33m ([m[1;31morigin/feature/qa[m[33m)[m HEAD@{2026-04-27 10:59:07 -0300}: pull --rebase origin feature/qa (start): checkout d6d14e0c0dcdc4bbdd92269c18c52c0b15d0ed4d
+[33ma6da719[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/qa[m[33m)[m HEAD@{2026-04-27 10:59:06 -0300}: commit: chore(tests/docs): salvar mudanças locais antes do rebase
+[33mff727ac[m HEAD@{2026-04-27 10:26:48 -0300}: Branch: renamed refs/heads/feature/qa-from-main to refs/heads/feature/qa
+[33mff727ac[m HEAD@{2026-04-27 10:16:20 -0300}: checkout: moving from main to feature/qa-from-main
+[33mba4c19c[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{2026-04-27 10:15:35 -0300}: checkout: moving from feature/qa-from-main to main
+[33mff727ac[m HEAD@{2026-04-27 10:15:26 -0300}: checkout: moving from main to feature/qa-from-main
+[33mba4c19c[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{2026-04-27 10:12:36 -0300}: merge feature/qa-from-main: Merge made by the 'ort' strategy.
+[33mf6cb4ef[m HEAD@{2026-04-27 10:12:24 -0300}: checkout: moving from feature/qa-from-main to main
+[33mff727ac[m HEAD@{2026-04-27 10:12:06 -0300}: commit: add novas tarefas
+[33mdcc6462[m HEAD@{2026-04-27 09:53:40 -0300}: commit: teste não deve permitir cadastrar uma tarefa com mesmo nome concluido
+[33m482b0ec[m HEAD@{2026-04-27 09:32:15 -0300}: commit: add regra de negócio para cadastrar uma nova tarefa
+[33m8cac9b4[m HEAD@{2026-04-27 08:51:16 -0300}: commit: add refatoraçao de testes
+[33mc4fd3cc[m HEAD@{2026-04-26 17:31:49 -0300}: commit: test 'não deve cadastrar com mesmo nome 'done
+[33m81b9f3f[m HEAD@{2026-04-26 17:14:52 -0300}: commit: add novo test - não deve permitir add tarefa com mesmo nome
+[33m6e7f303[m HEAD@{2026-04-26 17:05:19 -0300}: commit: add novo script de validaçao de testes
+[33m393cd4b[m HEAD@{2026-04-26 17:01:39 -0300}: commit: add teste com nosso comandos
+[33m47dfbef[m HEAD@{2026-04-26 16:47:26 -0300}: commit: add test de tarefa concluida
+[33m31e6745[m HEAD@{2026-04-26 12:03:57 -0300}: commit: aprimorando massa de testes de tarefas
+[33m83ee129[m HEAD@{2026-04-26 11:38:32 -0300}: commit: adicionando biblioteca faker.js
