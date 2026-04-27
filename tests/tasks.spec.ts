@@ -12,7 +12,7 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
 
   await deleteTaskByHelper(request, task.name)
 
-  const tasksPage = new TasksPage(page)
+  const tasksPage: TasksPage = new TasksPage(page)
   await tasksPage.go()
   await tasksPage.create(task)
   await tasksPage.shouldHaveText(task.name)
@@ -30,9 +30,9 @@ test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, re
   await deleteTaskByHelper(request, task.name)
   await postTask(request, task)
 
-  const tasksPage = new TasksPage(page)
+  const tasksPage: TasksPage = new TasksPage(page)
   await tasksPage.go()
   await tasksPage.create(task)
 
-  tasksPage.alertHaveText('Task already exists')
+  await tasksPage.alertHaveText('Task already exists!')
 })
