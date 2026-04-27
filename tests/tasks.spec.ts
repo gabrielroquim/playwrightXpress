@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test'
 
 
 test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
-const taskName = 'Ler um livro de qualidade'
+  const taskName = 'Ler um livro de qualidade'
   // 💡 DICA 1 — Fixture `request`: faz chamadas HTTP direto na API sem abrir browser.
   // Usado aqui para garantir que o teste começa sem dados residuais (idempotência).
   await request.delete('http://localhost:3333/helper/tasks/' + taskName)
@@ -27,10 +27,17 @@ const taskName = 'Ler um livro de qualidade'
 })
 
 test.only('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
+
   const taskName = 'Ler um livro de testes de software'
+  await request.delete('http://localhost:3333/helper/tasks/' + taskName)
+
   await page.goto('http://localhost:8080')
 
   const inputTaskName = page.locator('input[class*=InputNewTask]')
+  
+  await inputTaskName.fill(taskName)
+  await page.click('css=button >> text=Create')
+
   await inputTaskName.fill(taskName)
   await page.click('css=button >> text=Create')
 
