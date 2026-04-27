@@ -28,17 +28,20 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
 
 test.only('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
 
-  const taskName = 'Ler um livro de testes de software'
-  await request.delete('http://localhost:3333/helper/tasks/' + taskName)
+  const task = {
+    name: 'Ler um livro de qualidade',
+    is_done: false
+  }
+
+  await request.delete('http://localhost:3333/helper/tasks/' + task.name)
+
+  const newTask = await request.post('http://localhost:3333/tasks', {data: task})
+  expect(newTask.ok()).toBeTruthy()
 
   await page.goto('http://localhost:8080')
 
   const inputTaskName = page.locator('input[class*=InputNewTask]')
-  
-  await inputTaskName.fill(taskName)
-  await page.click('css=button >> text=Create')
-
-  await inputTaskName.fill(taskName)
+  await inputTaskName.fill(task.name)
   await page.click('css=button >> text=Create')
 
   const target = page.locator('.swal2-html-container')
