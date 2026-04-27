@@ -1,10 +1,7 @@
 // 📚 Dicas completas sobre os recursos usados neste arquivo: docs/PLAYWRIGHT_TIPS.md
-import { test, expect, APIRequestContext } from '@playwright/test'
+import { test, expect} from '@playwright/test'
 import { TaskModel } from './fixtures/task.model'
-
-async function deleteTaskByHelper(request: APIRequestContext, taskName: string) {
- await request.delete('http://localhost:3333/helper/tasks/' + taskName)
-}
+import { deleteTaskByHelper, postTask } from './support/helpers'
 
 test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
   const task: TaskModel = {
@@ -31,17 +28,15 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
   await expect(target).toBeVisible()
 })
 
-test.only('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
+test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
 
   const task: TaskModel = {
     name: 'Ler um livro de qualidade',
     is_done: false
   }
 
-   await deleteTaskByHelper(request, task.name)
-
-  const newTask = await request.post('http://localhost:3333/tasks', {data: task})
-  expect(newTask.ok()).toBeTruthy()
+  await deleteTaskByHelper(request, task.name)
+  await postTask(request, task)
 
   await page.goto('http://localhost:8080')
 
