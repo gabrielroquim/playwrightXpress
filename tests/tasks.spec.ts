@@ -19,7 +19,6 @@ test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
 
 })
 
-
 test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
 
   const task: TaskModel = {

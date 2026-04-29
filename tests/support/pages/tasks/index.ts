@@ -1,11 +1,13 @@
 import { TaskModel } from './../../../fixtures/task.model';
-import { Page, expect } from '@playwright/test'
+import { Page, expect, Locator } from '@playwright/test'
 
 export class TasksPage {
     readonly page: Page
+    readonly inputTaskName: Locator
 
     constructor(page: Page) {
         this.page = page
+        this.inputTaskName = page.locator('input[class*=InputNewTask]')
     }
 
     async go() {
@@ -14,10 +16,7 @@ export class TasksPage {
 
     async create(task: TaskModel) {
 
-        // 💡 DICA 2 — Seletor com `*=`: localiza o input que contenha "InputNewTask" em
-        // qualquer parte da classe CSS — útil quando o framework gera classes com hash dinâmico.
-        const inputTaskName = this.page.locator('input[class*=InputNewTask]')
-        await inputTaskName.fill(task.name)
+        await this.inputTaskName.fill(task.name)
 
         // 💡 DICA 3 — Seletor de texto com `>> text=`: combina CSS + texto sem usar XPath.
         // Alternativa XPath (mais verbosa): page.click('//button[contains(text(),"Create")]')
