@@ -36,7 +36,7 @@ test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, re
   await tasksPage.alertHaveText('Task already exists!')
 })
 
-test.only('campo obrigatório', async ({ page }) => {
+test('campo obrigatório', async ({ page }) => {
   const task: TaskModel = {
     name: '',
     is_done: false
@@ -45,8 +45,7 @@ test.only('campo obrigatório', async ({ page }) => {
   await tasksPage.go()
   await tasksPage.create(task)
 
-  const inputTaskName = page.locator('input[class*=InputNewTask]')
-  const validationMessage = await inputTaskName.evaluate((e => (e as HTMLInputElement).validationMessage))
+  const validationMessage = await tasksPage.inputTaskName.evaluate((e => (e as HTMLInputElement).validationMessage))
   expect(validationMessage).toEqual('This is a required field')
 
   // await tasksPage.alertHaveText('This is a required field')
