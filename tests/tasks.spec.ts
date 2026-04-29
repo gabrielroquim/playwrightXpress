@@ -45,7 +45,6 @@ test.describe('Cadastro de tarefas', () => {
   })
 })
 
-
 test.describe('atulização de tarefas', () => {
   test('deve marcar uma tarefa como concluída', async ({ page, request }) => {
     const task = data.update as TaskModel
@@ -57,6 +56,20 @@ test.describe('atulização de tarefas', () => {
     await tasksPage.go()
     await tasksPage.toggle(task.name)
     await tasksPage.shouldBeDone(task.name)
+  })
+})
+
+test.describe('delete de tarefas', () => {
+  test('deve deletar uma tarefa', async ({ page, request }) => {
+    const task = data.delete as TaskModel
+
+    await deleteTaskByHelper(request, task.name)
+    await postTask(request, task)
+
+    const tasksPage: TasksPage = new TasksPage(page)
+    await tasksPage.go()
+    await tasksPage.remove(task.name)
+    await tasksPage.shouldNotExist(task.name)
   })
 })
 
