@@ -1,6 +1,21 @@
 # 🎭 PlaywrightXpress — Automação de Testes End-to-End
 
-Projeto de automação de testes E2E com **Playwright** para uma aplicação de gerenciamento de tarefas (To-Do), cobrindo interface web e API REST com banco de dados SQLite.
+Projeto de automação de testes **E2E** com [Playwright](https://playwright.dev/) para uma aplicação de gerenciamento de tarefas (To-Do List).  
+Cobre cenários de **interface web** e **API REST**, com banco de dados SQLite, seguindo o padrão **Page Object Model (POM)**.
+
+---
+
+## 📌 Visão Geral
+
+```
+Frontend (porta 8080) ──► Playwright (testes E2E + API)
+                                    │
+                          API REST (porta 3333)
+                                    │
+                              SQLite (local)
+```
+
+Os testes interagem com o frontend via browser e com a API diretamente para setup/teardown de dados — garantindo testes **isolados e idempotentes**.
 
 ---
 
@@ -9,11 +24,18 @@ Projeto de automação de testes E2E com **Playwright** para uma aplicação de 
 ```
 playwright-mark/
 ├── apps/
-│   ├── api/          → Backend Node.js + Express + TypeORM + SQLite
-│   └── web/          → Frontend estático (HTML/CSS/JS)
+│   ├── api/                      → Backend Node.js + Express + TypeORM + SQLite
+│   └── web/                      → Frontend estático (HTML/CSS/JS)
 ├── tests/
-│   ├── home.spec.ts  → Teste de sanidade (app online)
-│   └── tasks.spec.ts → Testes funcionais de tarefas
+│   ├── home.spec.ts              → Teste de sanidade (app online)
+│   ├── tasks.spec.ts             → Testes funcionais de tarefas
+│   ├── fixtures/
+│   │   └── task.model.ts         → Interface TaskModel
+│   └── support/
+│       ├── helpers.ts            → Funções de API (POST/DELETE via request)
+│       └── pages/tasks/index.ts  → Page Object da tela de tarefas
+├── docs/
+│   └── PLAYWRIGHT_TIPS.md        → Dicas e referências dos recursos usados
 ├── playwright.config.ts
 └── package.json
 ```
@@ -30,7 +52,7 @@ playwright-mark/
 
 ---
 
-## ⚙️ Configuração e Instalação
+## ⚙️ Instalação — Passo a Passo
 
 ### 1. Instalar dependências da raiz (Playwright)
 
@@ -56,76 +78,90 @@ yarn db:init
 
 ---
 
-## ▶️ Executando a Aplicação
+## ▶️ Subindo a Aplicação
 
-Antes de rodar os testes, **ambos os serviços precisam estar no ar**:
+Os testes dependem de **dois serviços rodando ao mesmo tempo**. Abra dois terminais:
 
-### API (porta 3333)
+**Terminal 1 — API (porta 3333)**
 
 ```bash
 cd apps/api
 yarn dev
 ```
 
-### Web (porta 8080)
-
-Sirva a pasta `apps/web/` com qualquer servidor estático, por exemplo:
+**Terminal 2 — Frontend (porta 8080)**
 
 ```bash
 npx serve apps/web -p 8080
 ```
 
+> Após subir os dois serviços, você já pode executar os testes.
+
 ---
 
 ## 🧪 Executando os Testes
 
-### Rodar todos os testes
-
-```bash
-npx playwright test
-```
-
-### Rodar um arquivo específico
-
-```bash
-npx playwright test tests/tasks.spec.ts
-```
-
-### Rodar com interface visual (UI Mode)
-
-```bash
-npx playwright test --ui
-```
-
-### Gerar e abrir relatório HTML
-
-```bash
-npx playwright show-report
-```
+| Objetivo | Comando |
+|----------|---------|
+| Rodar todos os testes | `npx playwright test` |
+| Rodar um arquivo específico | `npx playwright test tests/tasks.spec.ts` |
+| Modo visual (UI Mode) | `npx playwright test --ui` |
+| Ver relatório HTML | `npx playwright show-report` |
 
 ---
 
 ## 📋 Casos de Teste
 
 ### `home.spec.ts`
-| Teste | Descrição |
-|-------|-----------|
-| app deve estar online | Verifica se a aplicação carrega na porta 8080 |
+
+| Cenário | Descrição |
+|---------|-----------|
+| App deve estar online | Verifica se a aplicação carrega corretamente na porta 8080 |
 
 ### `tasks.spec.ts`
-| Teste | Descrição |
-|-------|-----------|
-| deve poder cadastrar uma nova tarefa | Preenche o campo, clica em Create e valida que a tarefa aparece na lista |
+
+| Cenário | Descrição |
+|---------|-----------|
+| Deve cadastrar uma nova tarefa | Preenche o campo, clica em *Create* e valida que a tarefa aparece na lista |
+| Não deve permitir tarefa duplicada | Tenta cadastrar uma tarefa com nome já existente e valida a mensagem de erro |
+
+---
+
+## 🏗️ Padrões e Arquitetura dos Testes
+
+### Page Object Model (POM)
+
+A classe `TasksPage` encapsula todas as interações com a tela de tarefas:
+
+```typescript
+const tasksPage = new TasksPage(page)
+await tasksPage.go()          // navega para a página
+await tasksPage.create(task)  // preenche e submete o formulário
+await tasksPage.shouldHaveText(task.name)  // valida resultado
+```
+
+### Setup via API (fixture `request`)
+
+Antes de cada teste, o estado do banco é controlado diretamente via API — sem depender da UI para preparar dados:
+
+```typescript
+await deleteTaskByHelper(request, task.name) // limpa o banco
+await postTask(request, task)                // insere dado de teste
+```
 
 ---
 
 ## 💡 Dicas de Playwright
 
-As dicas e aprendizados sobre os recursos usados nos testes estão documentadas em:
+As técnicas usadas neste projeto estão documentadas em detalhes:
 
 📄 **[docs/PLAYWRIGHT_TIPS.md](docs/PLAYWRIGHT_TIPS.md)**
 
-Tópicos cobertos: seletores `*=`, `>> text=`, fixture `request`, Faker.js, rotas de helper por ambiente e boas práticas gerais.
+Tópicos cobertos:
+- Fixture `request` para chamadas HTTP sem abrir o browser
+- Seletor `*=` para classes CSS com hash dinâmico
+- Seletor `>> text=` combinando CSS e texto
+- Boas práticas de isolamento de testes
 
 ---
 
@@ -152,7 +188,7 @@ Tópicos cobertos: seletores `*=`, `>> text=`, fixture `request`, Faker.js, rota
 ## 🛠️ Stack Tecnológica
 
 | Camada | Tecnologia |
-|--------|-----------|
+|--------|------------|
 | Testes E2E | Playwright 1.59+ |
 | Dados de teste | Faker.js 10+ |
 | Backend | Node.js + Express |
@@ -162,11 +198,19 @@ Tópicos cobertos: seletores `*=`, `>> text=`, fixture `request`, Faker.js, rota
 
 ---
 
-## ⚠️ Observação sobre Node.js v24+
+## ⚠️ Atenção — Node.js v24+
 
-Se estiver usando **Node.js v24 ou superior**, certifique-se de usar `better-sqlite3@11+`. Versões anteriores (9.x) não compilam por exigência de C++20 nos headers do V8.
+Se estiver usando **Node.js v24 ou superior**, use `better-sqlite3@11+`. Versões anteriores não compilam por exigência de C++20 nos headers do V8.
 
 ```bash
 # Dentro de apps/api
 npm install better-sqlite3@11.10.0 --save
 ```
+
+---
+
+## 👤 Contato
+
+Dúvidas, sugestões ou colaborações? Me encontre no LinkedIn:
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Gabriel%20Roquim-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gabsqa/)
