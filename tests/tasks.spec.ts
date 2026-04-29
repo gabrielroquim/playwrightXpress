@@ -19,7 +19,6 @@ test.describe('Cadastro de tarefas', () => {
 
     await deleteTaskByHelper(request, task.name)
 
-
     await tasksPage.go()
     await tasksPage.create(task)
     await tasksPage.shouldHaveText(task.name)
@@ -32,10 +31,8 @@ test.describe('Cadastro de tarefas', () => {
     await deleteTaskByHelper(request, task.name)
     await postTask(request, task)
 
-
     await tasksPage.go()
     await tasksPage.create(task)
-
     await tasksPage.alertHaveText('Task already exists!')
   })
 
@@ -58,7 +55,6 @@ test.describe('atulização de tarefas', () => {
     await deleteTaskByHelper(request, task.name)
     await postTask(request, task)
 
-
     await tasksPage.go()
     await tasksPage.toggle(task.name)
     await tasksPage.shouldBeDone(task.name)
@@ -77,5 +73,3 @@ test.describe('delete de tarefas', () => {
     await tasksPage.shouldNotExist(task.name)
   })
 })
-
-
