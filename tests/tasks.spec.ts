@@ -6,7 +6,7 @@ import { TasksPage } from './support/pages/tasks/index'
 import data from './fixtures/tasks.json'
 
 test('deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
-const task = data.success as TaskModel
+  const task = data.success as TaskModel
 
   await deleteTaskByHelper(request, task.name)
 
@@ -18,11 +18,7 @@ const task = data.success as TaskModel
 })
 
 test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, request }) => {
-
-  const task: TaskModel = {
-    name: 'Ler um livro de qualidade',
-    is_done: false
-  }
+  const task = data.duplicate as TaskModel
 
   await deleteTaskByHelper(request, task.name)
   await postTask(request, task)
@@ -35,10 +31,8 @@ test('não deve permitir cadastrar uma tarefa com mesmo nome', async ({ page, re
 })
 
 test('campo obrigatório', async ({ page }) => {
-  const task: TaskModel = {
-    name: '',
-    is_done: false
-  }
+  const task = data.required as TaskModel
+
   const tasksPage: TasksPage = new TasksPage(page)
   await tasksPage.go()
   await tasksPage.create(task)
