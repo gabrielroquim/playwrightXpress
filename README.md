@@ -1,5 +1,10 @@
 # 🎭 PlaywrightXpress — Automação de Testes End-to-End
 
+[![Playwright](https://img.shields.io/badge/Playwright-1.59+-2EAD33?style=flat&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)](LICENSE)
+
 Projeto de automação de testes **E2E** com [Playwright](https://playwright.dev/) para uma aplicação de gerenciamento de tarefas (To-Do List).  
 Cobre cenários de **interface web** e **API REST**, com banco de dados SQLite, seguindo o padrão **Page Object Model (POM)**.
 
@@ -30,13 +35,15 @@ playwright-mark/
 │   ├── home.spec.ts              → Teste de sanidade (app online)
 │   ├── tasks.spec.ts             → Testes funcionais de tarefas
 │   ├── fixtures/
-│   │   └── task.model.ts         → Interface TaskModel
+│   │   ├── task.model.ts         → Interface TaskModel
+│   │   └── tasks.json            → Massa de dados dos testes
 │   └── support/
 │       ├── helpers.ts            → Funções de API (POST/DELETE via request)
 │       └── pages/tasks/index.ts  → Page Object da tela de tarefas
 ├── docs/
 │   └── PLAYWRIGHT_TIPS.md        → Dicas e referências dos recursos usados
 ├── playwright.config.ts
+├── tsconfig.json
 └── package.json
 ```
 
@@ -48,7 +55,6 @@ playwright-mark/
 |------------|---------------|
 | Node.js    | v18+          |
 | Yarn       | v1.22+        |
-| NPM        | v9+           |
 
 ---
 
@@ -57,8 +63,8 @@ playwright-mark/
 ### 1. Instalar dependências da raiz (Playwright)
 
 ```bash
-npm install
-npx playwright install
+yarn install
+yarn playwright install
 ```
 
 ### 2. Instalar dependências da API
@@ -68,9 +74,19 @@ cd apps/api
 yarn install
 ```
 
-### 3. Inicializar o banco de dados
+### 3. Configurar variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+BASE_URL=http://localhost:8080
+BASE_API=http://localhost:3333
+```
+
+### 4. Inicializar o banco de dados
 
 ```bash
+cd apps/api
 yarn db:init
 ```
 
@@ -103,10 +119,11 @@ npx serve apps/web -p 8080
 
 | Objetivo | Comando |
 |----------|---------|
-| Rodar todos os testes | `npx playwright test` |
-| Rodar um arquivo específico | `npx playwright test tests/tasks.spec.ts` |
-| Modo visual (UI Mode) | `npx playwright test --ui` |
-| Ver relatório HTML | `npx playwright show-report` |
+| Rodar todos os testes | `yarn playwright test` |
+| Rodar um arquivo específico | `yarn playwright test tests/tasks.spec.ts` |
+| Rodar apenas Chromium | `yarn playwright test --project=chromium` |
+| Modo visual (UI Mode) | `yarn playwright test --ui` |
+| Ver relatório HTML | `yarn playwright show-report` |
 
 ---
 
@@ -120,10 +137,13 @@ npx serve apps/web -p 8080
 
 ### `tasks.spec.ts`
 
-| Cenário | Descrição |
-|---------|-----------|
-| Deve cadastrar uma nova tarefa | Preenche o campo, clica em *Create* e valida que a tarefa aparece na lista |
-| Não deve permitir tarefa duplicada | Tenta cadastrar uma tarefa com nome já existente e valida a mensagem de erro |
+| Suite | Cenário | Descrição |
+|-------|---------|-----------|
+| Cadastro | Deve cadastrar uma nova tarefa | Preenche o campo, clica em *Create* e valida que a tarefa aparece na lista |
+| Cadastro | Não deve permitir tarefa duplicada | Tenta cadastrar tarefa com nome já existente e valida a mensagem de erro |
+| Cadastro | Campo obrigatório | Tenta submeter sem nome e valida a mensagem de validação nativa do browser |
+| Atualização | Deve marcar uma tarefa como concluída | Clica no toggle e valida o estilo `line-through` no nome da tarefa |
+| Deleção | Deve deletar uma tarefa | Clica em remover e valida que a tarefa não existe mais na lista |
 
 ---
 
@@ -135,9 +155,13 @@ A classe `TasksPage` encapsula todas as interações com a tela de tarefas:
 
 ```typescript
 const tasksPage = new TasksPage(page)
-await tasksPage.go()          // navega para a página
-await tasksPage.create(task)  // preenche e submete o formulário
-await tasksPage.shouldHaveText(task.name)  // valida resultado
+await tasksPage.go()                        // navega para a página
+await tasksPage.create(task)               // preenche e submete o formulário
+await tasksPage.shouldHaveText(task.name)  // valida que a tarefa foi criada
+await tasksPage.toggle(task.name)          // marca como concluída
+await tasksPage.shouldBeDone(task.name)    // valida estilo line-through
+await tasksPage.remove(task.name)          // deleta a tarefa
+await tasksPage.shouldNotExist(task.name)  // valida que foi removida
 ```
 
 ### Setup via API (fixture `request`)
@@ -145,8 +169,22 @@ await tasksPage.shouldHaveText(task.name)  // valida resultado
 Antes de cada teste, o estado do banco é controlado diretamente via API — sem depender da UI para preparar dados:
 
 ```typescript
-await deleteTaskByHelper(request, task.name) // limpa o banco
-await postTask(request, task)                // insere dado de teste
+await deleteTaskByHelper(request, task.name) // garante estado limpo
+await postTask(request, task)                // insere pré-condição
+```
+
+### Massa de Dados (`tasks.json`)
+
+Os dados de teste são centralizados em `tests/fixtures/tasks.json`, separados por cenário:
+
+```json
+{
+  "success":   { "name": "...", "is_done": false },
+  "duplicate": { "name": "...", "is_done": false },
+  "required":  { "name": "",   "is_done": false },
+  "update":    { "name": "...", "is_done": false },
+  "delete":    { "name": "...", "is_done": false }
+}
 ```
 
 ---
@@ -171,9 +209,10 @@ Tópicos cobertos:
 
 | Comando | Descrição |
 |---------|-----------|
-| `npx playwright test` | Executa todos os testes |
-| `npx playwright test --ui` | Abre o Playwright UI Mode |
-| `npx playwright show-report` | Abre o relatório HTML |
+| `yarn playwright test` | Executa todos os testes |
+| `yarn playwright test --ui` | Abre o Playwright UI Mode |
+| `yarn playwright show-report` | Abre o relatório HTML |
+| `yarn playwright install` | Instala os browsers do Playwright |
 
 ### `apps/api`
 
@@ -187,24 +226,42 @@ Tópicos cobertos:
 
 ## 🛠️ Stack Tecnológica
 
+### Linguagens & Ferramentas
+
+<p align="left">
+  <a href="https://www.typescriptlang.org/"><img src="https://skillicons.dev/icons?i=ts" alt="TypeScript" title="TypeScript" height="40"/></a>
+  <a href="https://nodejs.org/"><img src="https://skillicons.dev/icons?i=nodejs" alt="Node.js" title="Node.js" height="40"/></a>
+  <a href="https://expressjs.com/"><img src="https://skillicons.dev/icons?i=express" alt="Express" title="Express" height="40"/></a>
+  <a href="https://www.sqlite.org/"><img src="https://skillicons.dev/icons?i=sqlite" alt="SQLite" title="SQLite" height="40"/></a>
+  <a href="https://playwright.dev/"><img src="https://cdn.simpleicons.org/playwright/2EAD33" alt="Playwright" title="Playwright" height="40"/></a>
+  <a href="https://git-scm.com/"><img src="https://skillicons.dev/icons?i=git" alt="Git" title="Git" height="40"/></a>
+</p>
+
 | Camada | Tecnologia |
 |--------|------------|
 | Testes E2E | Playwright 1.59+ |
-| Dados de teste | Faker.js 10+ |
-| Backend | Node.js + Express |
+| Linguagem de testes | TypeScript 5+ |
+| Variáveis de ambiente | dotenv 17+ |
+| Backend | Node.js + Express 4 |
 | ORM | TypeORM 0.2 |
 | Banco de dados | SQLite (better-sqlite3 11+) |
 | Frontend | HTML/CSS/JS estático |
 
 ---
 
-## ⚠️ Atenção — Node.js v24+
+## ⚠️ Atenção — Node.js v24+ e Windows Firewall
 
-Se estiver usando **Node.js v24 ou superior**, use `better-sqlite3@11+`. Versões anteriores não compilam por exigência de C++20 nos headers do V8.
+**Node.js v24+:** use `better-sqlite3@11+`. Versões anteriores não compilam por exigência de C++20.
 
 ```bash
 # Dentro de apps/api
-npm install better-sqlite3@11.10.0 --save
+yarn add better-sqlite3@11.10.0
+```
+
+**Windows Firewall:** ao executar os testes pela primeira vez em Firefox ou WebKit, o Windows pode bloquear o acesso à rede. Caso isso ocorra, reinstale os browsers para que o popup apareça novamente:
+
+```bash
+yarn playwright install firefox webkit
 ```
 
 ---
