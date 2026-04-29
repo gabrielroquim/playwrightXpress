@@ -233,7 +233,7 @@ Tópicos cobertos:
   <a href="https://nodejs.org/"><img src="https://skillicons.dev/icons?i=nodejs" alt="Node.js" title="Node.js" height="40"/></a>
   <a href="https://expressjs.com/"><img src="https://skillicons.dev/icons?i=express" alt="Express" title="Express" height="40"/></a>
   <a href="https://www.sqlite.org/"><img src="https://skillicons.dev/icons?i=sqlite" alt="SQLite" title="SQLite" height="40"/></a>
-  <a href="https://playwright.dev/"><img src="https://cdn.simpleicons.org/playwright/2EAD33" alt="Playwright" title="Playwright" height="40"/></a>
+  <a href="https://playwright.dev/"><img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" title="Playwright" height="40"/></a>
   <a href="https://git-scm.com/"><img src="https://skillicons.dev/icons?i=git" alt="Git" title="Git" height="40"/></a>
 </p>
 
