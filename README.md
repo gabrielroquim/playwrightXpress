@@ -5,6 +5,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)](LICENSE)
 
+> 📚 Projeto desenvolvido durante o curso **[Playwright eXpress](https://www.udemy.com/course/playwright-express/)** — instrutor **Fernando Papito**
+
 Projeto de automação de testes **E2E** com [Playwright](https://playwright.dev/) para uma aplicação de gerenciamento de tarefas (To-Do List).  
 Cobre cenários de **interface web** e **API REST**, com banco de dados SQLite, seguindo o padrão **Page Object Model (POM)**.
 
@@ -229,12 +231,8 @@ Tópicos cobertos:
 ### Linguagens & Ferramentas
 
 <p align="left">
-  <a href="https://www.typescriptlang.org/"><img src="https://skillicons.dev/icons?i=ts" alt="TypeScript" title="TypeScript" height="40"/></a>
-  <a href="https://nodejs.org/"><img src="https://skillicons.dev/icons?i=nodejs" alt="Node.js" title="Node.js" height="40"/></a>
-  <a href="https://expressjs.com/"><img src="https://skillicons.dev/icons?i=express" alt="Express" title="Express" height="40"/></a>
-  <a href="https://www.sqlite.org/"><img src="https://skillicons.dev/icons?i=sqlite" alt="SQLite" title="SQLite" height="40"/></a>
-  <a href="https://playwright.dev/"><img src="https://cdn.simpleicons.org/playwright/2EAD33" alt="Playwright" title="Playwright" height="40"/></a>
-  <a href="https://git-scm.com/"><img src="https://skillicons.dev/icons?i=git" alt="Git" title="Git" height="40"/></a>
+  <img src="https://skillicons.dev/icons?i=ts,nodejs,express,sqlite,git" alt="TypeScript, Node.js, Express, SQLite, Git" height="40"/>
+  <img src="https://img.shields.io/badge/⠀-2EAD33?logo=playwright&logoColor=white&style=flat-square" alt="Playwright" title="Playwright" height="40"/>
 </p>
 
 | Camada | Tecnologia |
