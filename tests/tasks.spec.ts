@@ -33,7 +33,7 @@ test.describe('Cadastro de tarefas', () => {
 
     await tasksPage.go()
     await tasksPage.create(task)
-    await tasksPage.alertHaveText('Task already exists!')
+    await tasksPage.alertHaveText('Task already exists')
   })
 
   test('campo obrigatório', async ({ page }) => {
