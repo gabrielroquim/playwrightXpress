@@ -40,5 +40,16 @@ test('campo obrigatório', async ({ page }) => {
   const validationMessage = await tasksPage.inputTaskName.evaluate((e => (e as HTMLInputElement).validationMessage))
   expect(validationMessage).toEqual('This is a required field')
 
-  // await tasksPage.alertHaveText('This is a required field')
+})
+
+test.only('deve marcar uma tarefa como concluída', async ({ page, request }) => {
+  const task = data.update as TaskModel
+
+  await deleteTaskByHelper(request, task.name)
+  await postTask(request, task)
+
+  const tasksPage: TasksPage = new TasksPage(page)
+  await tasksPage.go()
+  await tasksPage.toggle(task.name)
+  await tasksPage.shouldBeDone(task.name)
 })

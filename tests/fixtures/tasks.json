@@ -10,5 +10,9 @@
   "required": {
     "name": "",
     "is_done": false
+  },
+  "update": {
+    "name": "livro de typescript",
+    "is_done": false
   }
 }
