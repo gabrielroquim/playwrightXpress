@@ -60,7 +60,7 @@ test.describe('atulização de tarefas', () => {
 })
 
 test.describe('delete de tarefas', () => {
-  test('deve deletar uma tarefa', async ({ page, request }) => {
+  test.only('deve deletar uma tarefa', async ({ page, request }) => {
     const task = data.delete as TaskModel
 
     await deleteTaskByHelper(request, task.name)
